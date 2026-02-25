@@ -1,0 +1,14 @@
+{
+  "resultado_muerte": 1.0,
+  "riesgo_muerte": 0.6,
+  "intervencion_gestacional": 1.0,
+  "resultado_lesion": 0.4,
+  "gravedad_lesion": 0.4,
+  "perdida_funcional": 0.0,
+  "violencia_fisica": 0.4,
+  "imprudencia": 0.2,
+  "uso_arma": 0.2,
+  "participacion_grupal": 0.0,
+  "maltrato_sin_lesion": 0.0,
+  "reiteracion": 0.2
+}
