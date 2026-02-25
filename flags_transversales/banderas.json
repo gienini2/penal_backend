@@ -1,0 +1,32 @@
+FLAGS_TRANSVERSALES = [
+    # víctima
+    "victima_menor_edad",
+    "victima_discapacidad",
+    "victima_autoridad",
+    "victima_FCSE",
+
+    # relación
+    "relacion_domestica",
+    "violencia_genero",
+    "violencia_domestica",
+
+    # cualificadores
+    "alevosia",
+    "ensañamiento",
+    "precio_recompensa",
+    "finalidad_encubrimiento",
+    "abuso_superioridad",
+    "actuacion_grupal",
+    "organizacion_criminal",
+
+    # resultado
+    "tentativa",
+    "resultado_muerte",
+    "resultado_lesiones_graves",
+
+    # contexto específico
+    "uso_vehiculo_motor",
+    "servicio_publico_afectado",
+    "motivacion_discriminatoria",
+    "cuantia_superior_1000"
+]
