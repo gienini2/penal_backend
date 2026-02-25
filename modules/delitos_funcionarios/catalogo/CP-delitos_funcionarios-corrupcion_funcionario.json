@@ -1,0 +1,18 @@
+{
+  "condicion_funcionario": 1.0,
+  "omision_deber_legal": 0.4,
+  "abuso_potestad": 0.8,
+  "detencion_privacion_libertad": 0.0,
+  "entrada_domicilio": 0.0,
+  "intercepcion_comunicaciones": 0.0,
+  "custodia_documental": 0.2,
+  "revelacion_informacion_reservada": 0.4,
+  "corrupcion_soborno": 1.0,
+  "acusacion_denuncia_falsa": 0.2,
+  "obstruccion_justicia": 0.4,
+  "quebrantamiento_condena": 0.0,
+  "denegacion_auxilio": 0.0,
+  "perjuicio_ciudadano": 0.6,
+  "animo_lucro": 1.0,
+  "reiteracion": 0.6
+}
