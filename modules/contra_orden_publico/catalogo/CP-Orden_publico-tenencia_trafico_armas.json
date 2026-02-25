@@ -1,0 +1,18 @@
+{
+  "violencia_autoridad": 0.0,
+  "intimidacion_autoridad": 0.0,
+  "resistencia_activa": 0.0,
+  "resistencia_pasiva": 0.0,
+  "desobediencia": 0.0,
+  "uso_arma": 0.6,
+  "tenencia_arma": 1.0,
+  "deposito_armas": 0.8,
+  "arma_prohibida": 0.8,
+  "alteracion_paz_publica": 0.2,
+  "interrupcion_servicio_publico": 0.0,
+  "motin_colectivo": 0.0,
+  "discurso_odio": 0.0,
+  "motivacion_discriminatoria": 0.0,
+  "danos_bienes_publicos": 0.0,
+  "reiteracion": 0.4
+}
