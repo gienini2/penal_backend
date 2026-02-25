@@ -1,0 +1,14 @@
+{
+  "violencia_fisica": 0.8,
+  "intimidacion": 0.8,
+  "contacto_corporal_sexual": 0.8,
+  "acceso_carnal": 0.4,
+  "tocamientos_sin_acceso": 0.6,
+  "actos_sexuales_sin_contacto": 0.2,
+  "exhibicion_obscena": 0.0,
+  "solicitud_favores_sexuales": 0.0,
+  "captacion_menor_online": 0.0,
+  "explotacion_prostitucion": 0.0,
+  "animo_lucro": 0.0,
+  "reiteracion": 0.2
+}
