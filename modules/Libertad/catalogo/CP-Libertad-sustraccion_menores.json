@@ -1,0 +1,17 @@
+{
+  "privacion_libertad": 0.6,
+  "duracion_retencion": 0.6,
+  "traslado_forzado": 0.8,
+  "impedimento_salida": 0.5,
+  "amenaza_grave": 0.1,
+  "amenaza_leve": 0.1,
+  "coaccion_directa": 0.3,
+  "exigencia_condicion": 0.0,
+  "chantaje": 0.0,
+  "acoso_reiterado": 0.0,
+  "acceso_domicilio": 0.2,
+  "revelacion_informacion": 0.0,
+  "omision_auxilio": 0.0,
+  "relacion_dependencia": 1.0,
+  "uso_menor": 1.0
+}
