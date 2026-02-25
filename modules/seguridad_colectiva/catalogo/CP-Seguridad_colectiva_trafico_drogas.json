@@ -1,0 +1,16 @@
+{
+  "sustancia_estupefaciente": 1.0,
+  "trafico_sustancia": 1.0,
+  "posesion_para_distribucion": 0.8,
+  "conduccion_vehiculo": 0.2,
+  "conduccion_temeraria": 0.0,
+  "riesgo_grave_circulacion": 0.0,
+  "menosprecio_vida": 0.0,
+  "negativa_prueba_alcohol_droga": 0.0,
+  "abandono_lugar_accidente": 0.0,
+  "conduccion_sin_permiso": 0.0,
+  "alteracion_elementos_viales": 0.0,
+  "resultado_lesivo": 0.0,
+  "animo_lucro": 0.8,
+  "reiteracion": 0.4
+}
