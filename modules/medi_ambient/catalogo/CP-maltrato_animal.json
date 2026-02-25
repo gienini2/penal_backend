@@ -1,0 +1,12 @@
+{
+  "dano_fauna": 0.3,
+  "dano_flora": 0.0,
+  "maltrato_animal": 1.0,
+  "abandono_animal": 0.2,
+  "riesgo_muerte_animal": 0.8,
+  "uso_metodos_prohibidos": 0.3,
+  "caza_pesca_ilegal": 0.0,
+  "dano_habitat_protegido": 0.0,
+  "animo_lucro": 0.2,
+  "reiteracion": 0.4
+}
