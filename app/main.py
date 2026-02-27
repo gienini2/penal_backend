@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
 from core.router.semantic_router import router_semantico
-from modules import patrimonio, libertad, vida_integridad
+
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
@@ -43,4 +43,5 @@ def analyze_penal(req: PenalRequest):
         "resultados": resultados
 
     }
+
 
