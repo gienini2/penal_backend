@@ -30,4 +30,5 @@ def analyze_penal(req: PenalRequest):
         "modulo": modulo,
         "confidence_router": score,
         "resultados": resultados
+
     }
