@@ -13,7 +13,10 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+is_penal, gate_score = penal_gate.evaluar(req.texto)
 
+if not is_penal:
+    return {"is_penal": False, "confidence_gate": gate_score}
 class PenalRequest(BaseModel):
     texto: str
 
@@ -41,6 +44,7 @@ def analyze_penal(req: PenalRequest):
         "resultados": resultados
 
     }
+
 
 
 
