@@ -1,5 +1,5 @@
 from core.gate.penal_gate import PenalGate
-from core.router.semantic_router import router_semantico
+from core.router.semantic_router import router_semantico_vector, embedding
 
 penal_gate = PenalGate(
     "vectores/centroide_penal.npy",
@@ -39,3 +39,4 @@ def analyze_penal(req: PenalRequest):
         "confidence_gate": gate_score,
         "top_delitos": ranking_global
     }
+
