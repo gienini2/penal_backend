@@ -8,7 +8,7 @@ penal_gate = PenalGate(
 )
 
 @app.post("/api/v1/penal/analyze")
-def analyze_penal(req: PenalRequest):
+async def analyze_penal(req: PenalRequest):
 
     is_penal, gate_score = penal_gate.evaluar(req.texto)
 
@@ -39,4 +39,5 @@ def analyze_penal(req: PenalRequest):
         "confidence_gate": gate_score,
         "top_delitos": ranking_global
     }
+
 
