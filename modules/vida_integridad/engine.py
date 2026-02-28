@@ -1,5 +1,5 @@
 from .extractor import extraer_vector
-from .similarity import comparar_patrimonio
+from .similarity import comparar_vida_integridad
 
 CATALOGO_PATH = "modules/vida_integridad/catalogo"
 UMBRAL = 0.50
