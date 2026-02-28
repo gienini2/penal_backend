@@ -77,7 +77,8 @@ async def analyze_penal(req: PenalRequest):
         "top_delitos": ranking_global
     }
     if not modulos:
-    return {
-        "is_penal": False,
-        "confidence_gate": gate_score
+        return {
+            "is_penal": False,
+            "confidence_gate": gate_score
     }
+
