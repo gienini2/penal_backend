@@ -66,7 +66,7 @@ async def analyze_penal(req: PenalRequest):
 
     # 3️⃣ router vectorial (CORRECTO)
     ranking = router_semantico_vector(vector, top_n=3)
-
+    print("RANKING ROUTER:", ranking)
     # 4️⃣ filtro dinámico
     modulos = filtrar_modulos(ranking)
 
@@ -98,6 +98,7 @@ async def analyze_penal(req: PenalRequest):
             "is_penal": False,
             "confidence_gate": gate_score
     }
+
 
 
 
