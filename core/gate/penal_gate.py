@@ -1,5 +1,5 @@
 import numpy as np
-from semantic_router import embedding, cosine
+from core.router.semantic_router import embedding, cosine
 
 class PenalGate:
 
