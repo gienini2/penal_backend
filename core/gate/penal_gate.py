@@ -18,3 +18,9 @@ class PenalGate:
         score = sim_penal - sim_no
 
         return score > self.threshold, score
+  
+    def evaluar_vector(self, emb):
+        sim_penal = cosine(emb, self.c_penal)
+        sim_no = cosine(emb, self.c_no)
+        score = sim_penal - sim_no
+        return score > self.threshold, score
