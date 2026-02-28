@@ -23,28 +23,27 @@ class PenalRequest(BaseModel):
 @app.post("/api/v1/penal/analyze")
 def analyze_penal(req: PenalRequest):
 
-    ranking = router_semantico(req.texto, top_n=1)
-
-    if not ranking:
-        return {"is_penal": False}
-
-    modulo, score = ranking[0]
-
-    if score < 0.22:
-        return {"is_penal": False}
-
-    # dispatch dinámico
-    engine = __import__(f"modules.{modulo}.engine", fromlist=["run"])
-    resultados = engine.run(req.texto)
-
+    modulos = router_semantico(req.texto, top_n=3)
+    
+    ranking_global = []
+    
+    for modulo, _ in modulos:
+        engine = __import__(f"modules.{modulo}.engine", fromlist=["run"])
+        resultados = engine.run(req.texto)
+        ranking_global.extend(resultados)
+    
+    ranking_global = sorted(
+        ranking_global,
+        key=lambda x: x.score,
+        reverse=True
+    )[:3]
+    
     return {
         "is_penal": True,
-        "modulo": modulo,
-        "confidence_router": score,
-        "resultados": resultados
-
+        "confidence_gate": gate_score,
+        "top_delitos": ranking_global
     }
-
-
+    
+    
 
 
