@@ -1,5 +1,6 @@
 from core.gate.penal_gate import PenalGate
 from core.router.semantic_router import router_semantico_vector, embedding
+import asyncio
 
 penal_gate = PenalGate(
     "vectores/centroide_penal.npy",
@@ -7,10 +8,46 @@ penal_gate = PenalGate(
     threshold=0.02
 )
 
+# 🔹 FILTRO DINÁMICO
+def filtrar_modulos(ranking):
+    if not ranking:
+        return []
+
+    seleccion = []
+
+    mod1, s1 = ranking[0]
+    if s1 < 0.22:
+        return []
+
+    seleccion.append((mod1, s1))
+
+    if len(ranking) > 1:
+        mod2, s2 = ranking[1]
+        if s2 >= 0.18 and (s1 - s2) <= 0.12:
+            seleccion.append((mod2, s2))
+
+    if len(ranking) > 2:
+        mod3, s3 = ranking[2]
+        if s3 >= 0.15:
+            seleccion.append((mod3, s3))
+
+    return seleccion
+
+
+# 🔹 EJECUTOR ASYNC DE ENGINE
+async def ejecutar_engine(modulo, texto):
+    engine = __import__(f"modules.{modulo}.engine", fromlist=["run"])
+    loop = asyncio.get_event_loop()
+    return await loop.run_in_executor(None, engine.run, texto)
+
+
 @app.post("/api/v1/penal/analyze")
 async def analyze_penal(req: PenalRequest):
 
+    # 1️⃣ embedding único
     vector = embedding(req.texto)
+
+    # 2️⃣ gate vectorial
     is_penal, gate_score = penal_gate.evaluar_vector(vector)
 
     if not is_penal:
@@ -19,19 +56,27 @@ async def analyze_penal(req: PenalRequest):
             "confidence_gate": gate_score
         }
 
-    # 🔥 Solo si es penal activas router
-    modulos = router_semantico(req.texto, top_n=3)
+    # 3️⃣ router vectorial
+    ranking = router_semantico_vector(vector, top_n=3)
+
+    # 4️⃣ filtro dinámico
+    modulos = filtrar_modulos(ranking)
+
+    # 5️⃣ ejecutar engines en paralelo
+    tasks = [
+        ejecutar_engine(modulo, req.texto)
+        for modulo, _ in modulos
+    ]
+
+    resultados_modulos = await asyncio.gather(*tasks)
 
     ranking_global = []
-
-    for modulo, _ in modulos:
-        engine = __import__(f"modules.{modulo}.engine", fromlist=["run"])
-        resultados = engine.run(req.texto)
+    for resultados in resultados_modulos:
         ranking_global.extend(resultados)
 
     ranking_global = sorted(
         ranking_global,
-        key=lambda x: x.score,
+        key=lambda x: x["score"],
         reverse=True
     )[:3]
 
@@ -40,6 +85,3 @@ async def analyze_penal(req: PenalRequest):
         "confidence_gate": gate_score,
         "top_delitos": ranking_global
     }
-
-
-
