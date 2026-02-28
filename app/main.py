@@ -1,14 +1,6 @@
-from core.gate.penal_gate import PenalGate
-from core.router.semantic_router import router_semantico_vector, embedding
 import asyncio
 
-penal_gate = PenalGate(
-    "vectores/centroide_penal.npy",
-    "vectores/centroide_no_penal.npy",
-    threshold=0.02
-)
 
-# 🔹 FILTRO DINÁMICO
 def filtrar_modulos(ranking):
     if not ranking:
         return []
@@ -34,7 +26,6 @@ def filtrar_modulos(ranking):
     return seleccion
 
 
-# 🔹 EJECUTOR ASYNC DE ENGINE
 async def ejecutar_engine(modulo, texto):
     engine = __import__(f"modules.{modulo}.engine", fromlist=["run"])
     loop = asyncio.get_event_loop()
@@ -56,13 +47,13 @@ async def analyze_penal(req: PenalRequest):
             "confidence_gate": gate_score
         }
 
-    # 3️⃣ router vectorial
+    # 3️⃣ router vectorial (CORRECTO)
     ranking = router_semantico_vector(vector, top_n=3)
 
     # 4️⃣ filtro dinámico
     modulos = filtrar_modulos(ranking)
 
-    # 5️⃣ ejecutar engines en paralelo
+    # 5️⃣ ejecución paralela
     tasks = [
         ejecutar_engine(modulo, req.texto)
         for modulo, _ in modulos
