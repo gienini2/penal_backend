@@ -10,7 +10,8 @@ penal_gate = PenalGate(
 @app.post("/api/v1/penal/analyze")
 async def analyze_penal(req: PenalRequest):
 
-    is_penal, gate_score = penal_gate.evaluar(req.texto)
+    vector = embedding(req.texto)
+    is_penal, gate_score = penal_gate.evaluar_vector(vector)
 
     if not is_penal:
         return {
@@ -39,5 +40,6 @@ async def analyze_penal(req: PenalRequest):
         "confidence_gate": gate_score,
         "top_delitos": ranking_global
     }
+
 
 
