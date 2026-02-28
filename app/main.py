@@ -1,12 +1,23 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
+from fastapi.middleware.cors import CORSMiddleware
 import asyncio
 
 from core.gate.penal_gate import PenalGate
 from core.router.semantic_router import router_semantico_vector, embedding
 
 app = FastAPI()
-
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "https://gienini2.github.io",
+        "http://localhost:5500",
+        "http://127.0.0.1:5500"
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 def filtrar_modulos(ranking):
     if not ranking:
         return []
@@ -87,5 +98,6 @@ async def analyze_penal(req: PenalRequest):
             "is_penal": False,
             "confidence_gate": gate_score
     }
+
 
 
