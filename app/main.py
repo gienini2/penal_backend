@@ -1,5 +1,11 @@
+from fastapi import FastAPI
+from pydantic import BaseModel
 import asyncio
 
+from core.gate.penal_gate import PenalGate
+from core.router.semantic_router import router_semantico_vector, embedding
+
+app = FastAPI()
 
 def filtrar_modulos(ranking):
     if not ranking:
@@ -81,4 +87,5 @@ async def analyze_penal(req: PenalRequest):
             "is_penal": False,
             "confidence_gate": gate_score
     }
+
 
