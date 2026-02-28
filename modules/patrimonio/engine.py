@@ -1,7 +1,7 @@
 from .extractor import extraer_vector
 from .similarity import comparar_patrimonio
 
-CATALOGO_PATH = "modules/Patrimonio/catalogo"
+CATALOGO_PATH = "modules/patrimonio/catalogo"
 UMBRAL = 0.50
 
 def run(texto):
