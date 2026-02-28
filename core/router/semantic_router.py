@@ -1,5 +1,3 @@
-
-
 import os
 import math
 import time
@@ -46,11 +44,9 @@ def inicializar_modulos():
             modulo: embedding(descripcion)
             for modulo, descripcion in MODULOS.items()
         }
-def router_semantico(texto, top_n=3):
+def router_semantico_vector(emb_texto, top_n=3):
 
     inicializar_modulos()
-
-    emb_texto = embedding(texto)
 
     ranking = []
 
@@ -59,4 +55,5 @@ def router_semantico(texto, top_n=3):
         ranking.append((modulo, score))
 
     ranking.sort(key=lambda x: x[1], reverse=True)
+
     return ranking[:top_n]
