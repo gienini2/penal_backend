@@ -5,7 +5,8 @@ import asyncio
 
 from core.gate.penal_gate import PenalGate
 from core.router.semantic_router import router_semantico_vector, embedding
-
+class PenalRequest(BaseModel):
+    texto: str
 @app.on_event("startup")
 def startup_event():
     app.state.penal_gate = PenalGate(
@@ -103,11 +104,7 @@ async def analyze_penal(req: PenalRequest):
             "confidence_gate": gate_score,
             "top_delitos": ranking_global
         }
-    if not modulos:
-        return {
-            "is_penal": False,
-            "confidence_gate": gate_score
-    }
+
 
 
 
