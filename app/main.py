@@ -105,6 +105,14 @@ async def analyze_penal(req: PenalRequest, request: Request):
         "confidence_gate": gate_score,
         "top_delitos": ranking_global
     }
+@app.post("/api/v1/penal/gate-test")
+async def gate_test(req: PenalRequest, request: Request):
+    vector = embedding(req.texto)
+    is_penal, score = request.app.state.penal_gate.evaluar_vector(vector)
+    return {
+        "is_penal": is_penal,
+        "score": score
+    }
 
 
 
