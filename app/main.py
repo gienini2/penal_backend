@@ -69,66 +69,7 @@ print("FILES:", os.listdir())
 
 @app.post("/api/v1/penal/analyze")
 async def analyze_penal(req: PenalRequest, request: Request):
-
-    vector = embedding(req.texto)
-
-    is_penal, gate_score = request.app.state.penal_gate.evaluar_vector(vector)
-
-    if not is_penal:
-        return {
-            "is_penal": False,
-            "confidence_gate": gate_score
-        }
-
-    ranking = router_semantico_vector(vector, top_n=3)
-    modulos = filtrar_modulos(ranking)
-
-    if not modulos:
-        return {
-            "is_penal": False,
-            "confidence_gate": gate_score
-        }
-
-    tasks = [
-        ejecutar_engine(modulo, req.texto)
-        for modulo, _ in modulos
-    ]
-
-    resultados_modulos = await asyncio.gather(*tasks)
-
-    ranking_global = []
-    for resultados in resultados_modulos:
-        ranking_global.extend(resultados)
-
-    ranking_global = sorted(
-        ranking_global,
-        key=lambda x: x["score"],
-        reverse=True
-    )[:3]
-
-    return {
-        "is_penal": True,
-        "confidence_gate": gate_score,
-        "top_delitos": ranking_global
-    }
-@app.post("/api/v1/penal/gate-test")
-async def gate_test(req: PenalRequest, request: Request):
-    vector = embedding(req.texto)
-    is_penal, score = request.app.state.penal_gate.evaluar_vector(vector)
-    return {
-        "is_penal": is_penal,
-        "score": score
-    }
-@app.post("/debug/router")
-async def debug_router(req: PenalRequest):
-    vector = embedding(req.texto)
-    ranking = router_semantico_vector(vector, top_n=3)
-    return {"ranking": ranking}
-
-
-
-
-
+    return {"debug": "entra correctamente", "texto": req.texto}
 
 
 
