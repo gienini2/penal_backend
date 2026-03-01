@@ -30,8 +30,7 @@ def embedding(texto):
         return response.data[0].embedding
 
     except Exception as e:
-        print(f"[ERROR EMBEDDING] {e}")
-        return [0.0] * 1536  # tamaño del embedding
+        raise RuntimeError(f"Error generando embedding: {e}")
 
 # 🔥 PRECALCULAR EMBEDDINGS DE MÓDULOS SOLO UNA VEZ
 EMB_MODULOS = None
@@ -57,3 +56,4 @@ def router_semantico_vector(emb_texto, top_n=3):
     ranking.sort(key=lambda x: x[1], reverse=True)
 
     return ranking[:top_n]
+
