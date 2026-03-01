@@ -47,6 +47,10 @@ def filtrar_modulos(ranking):
 
     return seleccion
 
+import os
+print("CWD:", os.getcwd())
+print("FILES:", os.listdir())
+
 
 async def ejecutar_engine(modulo, texto):
     engine = __import__(f"modules.{modulo}.engine", fromlist=["run"])
@@ -113,6 +117,7 @@ async def gate_test(req: PenalRequest, request: Request):
         "is_penal": is_penal,
         "score": score
     }
+
 
 
 
