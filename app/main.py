@@ -93,7 +93,11 @@ async def analyze_penal(req: PenalRequest):
         key=lambda x: x["score"],
         reverse=True
     )[:3]
-
+    if not modulos:
+            return {
+                "is_penal": False,
+                "confidence_gate": gate_score
+        }
     return {
             "is_penal": True,
             "confidence_gate": gate_score,
@@ -104,6 +108,7 @@ async def analyze_penal(req: PenalRequest):
             "is_penal": False,
             "confidence_gate": gate_score
     }
+
 
 
 
