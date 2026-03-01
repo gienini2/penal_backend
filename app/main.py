@@ -56,28 +56,31 @@ async def ejecutar_engine(modulo, texto):
     loop = asyncio.get_event_loop()
     return await loop.run_in_executor(None, engine.run, texto)
 
+class PenalRequest(BaseModel):
+    texto: str
 
 @app.post("/api/v1/penal/analyze")
-async def analyze_penal(req: PenalRequest):
+async def analyze_penal(req: PenalRequest, request: Request):
 
-    # 1️⃣ embedding único
     vector = embedding(req.texto)
 
-    # 2️⃣ gate vectorial
     is_penal, gate_score = request.app.state.penal_gate.evaluar_vector(vector)
+
     if not is_penal:
         return {
             "is_penal": False,
             "confidence_gate": gate_score
         }
 
-    # 3️⃣ router vectorial (CORRECTO)
     ranking = router_semantico_vector(vector, top_n=3)
-    print("RANKING ROUTER:", ranking)
-    # 4️⃣ filtro dinámico
     modulos = filtrar_modulos(ranking)
 
-    # 5️⃣ ejecución paralela
+    if not modulos:
+        return {
+            "is_penal": False,
+            "confidence_gate": gate_score
+        }
+
     tasks = [
         ejecutar_engine(modulo, req.texto)
         for modulo, _ in modulos
@@ -94,17 +97,12 @@ async def analyze_penal(req: PenalRequest):
         key=lambda x: x["score"],
         reverse=True
     )[:3]
-    if not modulos:
-            return {
-                "is_penal": False,
-                "confidence_gate": gate_score
-        }
-    return {
-            "is_penal": True,
-            "confidence_gate": gate_score,
-            "top_delitos": ranking_global
-        }
 
+    return {
+        "is_penal": True,
+        "confidence_gate": gate_score,
+        "top_delitos": ranking_global
+    }
 
 
 
