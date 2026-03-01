@@ -5,15 +5,10 @@ import asyncio
 
 from core.gate.penal_gate import PenalGate
 from core.router.semantic_router import router_semantico_vector, embedding
+
 class PenalRequest(BaseModel):
     texto: str
-@app.on_event("startup")
-def startup_event():
-    app.state.penal_gate = PenalGate(
-        "scripts/vectores/centroide_penal.npy",
-        "scripts/vectores/centroide_no_penal.npy",
-        threshold=-0.01
-    )
+
 app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
@@ -26,6 +21,8 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
 def filtrar_modulos(ranking):
     if not ranking:
         return []
@@ -56,9 +53,14 @@ async def ejecutar_engine(modulo, texto):
     loop = asyncio.get_event_loop()
     return await loop.run_in_executor(None, engine.run, texto)
 
-class PenalRequest(BaseModel):
-    texto: str
 
+@app.on_event("startup")
+def startup_event():
+    app.state.penal_gate = PenalGate(
+        "scripts/vectores/centroide_penal.npy",
+        "scripts/vectores/centroide_no_penal.npy",
+        threshold=-0.01
+    )
 @app.post("/api/v1/penal/analyze")
 async def analyze_penal(req: PenalRequest, request: Request):
 
@@ -103,6 +105,7 @@ async def analyze_penal(req: PenalRequest, request: Request):
         "confidence_gate": gate_score,
         "top_delitos": ranking_global
     }
+
 
 
 
