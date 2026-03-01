@@ -1,9 +1,11 @@
-# filtro_penal.py
-
-from semantic_router import router_semantico
+from core.gate.penal_gate import PenalGate
 from tqdm import tqdm
 
-UMBRAL = 0.22
+GATE = PenalGate(
+    "script/vectores/centroide_penal.npy",
+    "script/vectores/centroide_no_penal.npy",
+    threshold=-0.01
+)
 
 def filtrar_archivo(input_path, output_path):
 
@@ -11,17 +13,14 @@ def filtrar_archivo(input_path, output_path):
          open(output_path, "w", encoding="cp1252") as f_out:
 
         for linea in tqdm(f_in, desc="Filtrando"):
+
             partes = linea.strip().split("@")
             if len(partes) < 3:
                 continue
 
             texto = partes[1]
 
-            ranking = router_semantico(texto, top_n=1)
-            if not ranking:
-                continue
+            es_penal, score = GATE.evaluar(texto)
 
-            _, score = ranking[0]
-
-            if score >= UMBRAL:
+            if es_penal:
                 f_out.write(linea)
