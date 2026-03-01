@@ -88,7 +88,7 @@ async def analyze_penal(req: PenalRequest):
         reverse=True
     )[:3]
 
-        return {
+    return {
             "is_penal": True,
             "confidence_gate": gate_score,
             "top_delitos": ranking_global
@@ -99,9 +99,6 @@ async def analyze_penal(req: PenalRequest):
             "confidence_gate": gate_score
     }
 
-print("GATE SCORE:", gate_score)
-print("RANKING ROUTER:", ranking)
-print("MODULOS SELECCIONADOS:", modulos)
 
 
 
