@@ -3,7 +3,7 @@ from core.router.semantic_router import embedding, cosine
 
 class PenalGate:
 
-    def __init__(self, centroide_penal, centroide_no_penal, threshold=0.1):
+    def __init__(self, centroide_penal, centroide_no_penal, threshold=-0.1):
         self.c_penal = np.load(centroide_penal)
         self.c_no = np.load(centroide_no_penal)
         self.threshold = threshold
