@@ -2,8 +2,8 @@ from core.gate.penal_gate import PenalGate
 from tqdm import tqdm
 
 GATE = PenalGate(
-    "script/vectores/centroide_penal.npy",
-    "script/vectores/centroide_no_penal.npy",
+    "scripts/vectores/centroide_penal.npy",
+    "scripts/vectores/centroide_no_penal.npy",
     threshold=-0.01
 )
 
@@ -24,3 +24,4 @@ def filtrar_archivo(input_path, output_path):
 
             if es_penal:
                 f_out.write(linea)
+
