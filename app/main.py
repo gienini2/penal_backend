@@ -6,6 +6,13 @@ import asyncio
 from core.gate.penal_gate import PenalGate
 from core.router.semantic_router import router_semantico_vector, embedding
 
+@app.on_event("startup")
+def startup_event():
+    app.state.penal_gate = PenalGate(
+        "scripts/vectores/centroide_penal.npy",
+        "scripts/vectores/centroide_no_penal.npy",
+        threshold=-0.01
+    )
 app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
@@ -56,8 +63,7 @@ async def analyze_penal(req: PenalRequest):
     vector = embedding(req.texto)
 
     # 2️⃣ gate vectorial
-    is_penal, gate_score = penal_gate.evaluar_vector(vector)
-
+    is_penal, gate_score = request.app.state.penal_gate.evaluar_vector(vector)
     if not is_penal:
         return {
             "is_penal": False,
@@ -98,6 +104,7 @@ async def analyze_penal(req: PenalRequest):
             "is_penal": False,
             "confidence_gate": gate_score
     }
+
 
 
 
