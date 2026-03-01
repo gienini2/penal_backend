@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 import asyncio
@@ -105,6 +105,7 @@ async def analyze_penal(req: PenalRequest, request: Request):
         "confidence_gate": gate_score,
         "top_delitos": ranking_global
     }
+
 
 
 
