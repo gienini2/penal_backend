@@ -50,7 +50,7 @@ def filtrar_modulos(ranking):
 import os
 print("CWD:", os.getcwd())
 print("FILES:", os.listdir())
-
+print("MODULO A IMPORTAR:", modulo)
 
 async def ejecutar_engine(modulo, texto):
     engine = __import__(f"modules.{modulo}.engine", fromlist=["run"])
@@ -117,6 +117,11 @@ async def gate_test(req: PenalRequest, request: Request):
         "is_penal": is_penal,
         "score": score
     }
+@app.post("/debug/router")
+async def debug_router(req: PenalRequest):
+    vector = embedding(req.texto)
+    ranking = router_semantico_vector(vector, top_n=3)
+    return {"ranking": ranking}
 
 
 
