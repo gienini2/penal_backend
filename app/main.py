@@ -65,7 +65,7 @@ def startup_event():
 import os
 print("CWD:", os.getcwd())
 print("FILES:", os.listdir())
-print("MODULO A IMPORTAR:", modulo)
+
 
 @app.post("/api/v1/penal/analyze")
 async def analyze_penal(req: PenalRequest, request: Request):
@@ -124,6 +124,7 @@ async def debug_router(req: PenalRequest):
     vector = embedding(req.texto)
     ranking = router_semantico_vector(vector, top_n=3)
     return {"ranking": ranking}
+
 
 
 
