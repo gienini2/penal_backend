@@ -54,4 +54,5 @@ def comparar_medio_ambiente(vector_texto, path_base, umbral=0.5):
     if umbral > 0:
         ranking = [r for r in ranking if r["score"] >= umbral]
 
-    return ranking
+    return ranking[:3]  # ← añadir esto
+
