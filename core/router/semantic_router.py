@@ -2,6 +2,17 @@ import os
 import math
 import time
 import numpy as np
+from openai import OpenAI
+
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+
+def embedding(texto):
+    response = client.embeddings.create(
+        model="text-embedding-3-small",
+        input=texto
+    )
+    return response.data[0].embedding
+
 
 def cosine(v1, v2):
     dot = sum(a*b for a,b in zip(v1,v2))
@@ -10,6 +21,7 @@ def cosine(v1, v2):
     if n1 == 0 or n2 == 0:
         return 0.0
     return dot/(n1*n2)
+
 
 class ModuleRouter:
 
@@ -21,6 +33,4 @@ class ModuleRouter:
             modulo: cosine(emb, vector)
             for modulo, vector in self.centroides.items()
         }
-
         return sorted(scores.items(), key=lambda x: x[1], reverse=True)[:top_n]
-
