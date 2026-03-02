@@ -35,7 +35,7 @@ def cosine(v1, v2):
 def cargar_catalogo(path_base):
     matriz = {}
     for file in os.listdir(path_base):
-        if file.startswith("CP-Funcion") and file.endswith(".json"):
+        if file.startswith("CP-delitos_funcionarios") and file.endswith(".json"):
             nombre = file.replace("CP-","").replace(".json","")
             with open(os.path.join(path_base,file), "r", encoding="utf-8") as f:
                 matriz[nombre] = vector_to_list(json.load(f))
@@ -59,4 +59,5 @@ def comparar_funcion_publica(vector_texto, path_base, umbral=0.5):
     ranking.sort(key=lambda x: x["score"], reverse=True)
 
     return ranking
+
 
