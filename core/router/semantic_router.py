@@ -3,6 +3,7 @@ import math
 import time
 from openai import OpenAI
 import os
+import numpy as np
 
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 MODULOS = {
@@ -21,39 +22,21 @@ def cosine(v1, v2):
         return 0.0
     return dot/(n1*n2)
 
-def embedding(texto):
-    try:
-        response = client.embeddings.create(
-            model="text-embedding-3-small",
-            input=texto
-        )
-        return response.data[0].embedding
 
-    except Exception as e:
-        raise RuntimeError(f"Error generando embedding: {e}")
 
-# 🔥 PRECALCULAR EMBEDDINGS DE MÓDULOS SOLO UNA VEZ
-EMB_MODULOS = None
+class ModuleRouter:
 
-def inicializar_modulos():
-    global EMB_MODULOS
-    if EMB_MODULOS is None:
-        print("Inicializando embeddings de módulos...")
-        EMB_MODULOS = {
-            modulo: embedding(descripcion)
-            for modulo, descripcion in MODULOS.items()
+    def __init__(self, path):
+        self.centroides = np.load(path, allow_pickle=True).item()
+
+    def rank(self, emb, top_n=3):
+        scores = {
+            modulo: cosine(emb, vector)
+            for modulo, vector in self.centroides.items()
         }
-def router_semantico_vector(emb_texto, top_n=3):
 
-    inicializar_modulos()
-
-    ranking = []
-
-    for modulo, emb_mod in EMB_MODULOS.items():
-        score = cosine(emb_texto, emb_mod)
-        ranking.append((modulo, score))
-
-    ranking.sort(key=lambda x: x[1], reverse=True)
+        return sorted(scores.items(), key=lambda x: x[1], reverse=True)[:top_n]True)
 
     return ranking[:top_n]
+
 
