@@ -29,6 +29,7 @@ THRESHOLD_MOD2     = 0.18
 THRESHOLD_MOD2_GAP = 0.12
 THRESHOLD_MOD3     = 0.15
 
+
 @app.on_event("startup")
 async def startup_event():
     app.state.gate = PenalGate(
@@ -37,7 +38,12 @@ async def startup_event():
         threshold=THRESHOLD_GATE
     )
     app.state.router = ModuleRouter("scripts/vectores/centroides_modulos.npy")
-    print("✅ Gate y Router cargados correctamente")
+    
+    print("🗂️ Módulos detectados:", list(app.state.router.centroides.keys()))
+    
+    import os
+    modulos_disco = os.listdir("modules")
+    print("📁 Carpetas en modules/:", modulos_disco)
 
 
 def filtrar_modulos(ranking):
@@ -123,3 +129,4 @@ async def analyze_penal(req: PenalRequest):
 @app.get("/health")
 async def health():
     return {"status": "ok"}
+
