@@ -54,4 +54,5 @@ def comparar_vida_integridad(vector_texto, path_base, umbral=0.5):
 
     ranking.sort(key=lambda x: x["score"], reverse=True)
 
-    return ranking
+    return ranking[:3]  # ← añadir esto
+
