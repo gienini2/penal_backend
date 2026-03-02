@@ -47,8 +47,6 @@ def filtrar_modulos(ranking):
 
     return seleccion
 
-
-
 async def ejecutar_engine(modulo, texto):
     engine = __import__(f"modules.{modulo}.engine", fromlist=["run"])
     loop = asyncio.get_event_loop()
@@ -58,14 +56,10 @@ async def ejecutar_engine(modulo, texto):
 async def startup_event():
     app.state.router = ModuleRouter("scripts/vectores/centroides_modulos.npy")
 
-import os
-print("CWD:", os.getcwd())
-print("FILES:", os.listdir())
-
-
 @app.post("/api/v1/penal/analyze")
 async def analyze_penal(req: PenalRequest, request: Request):
     return {"debug": "entra correctamente", "texto": req.texto}
+
 
 
 
