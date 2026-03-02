@@ -54,14 +54,10 @@ async def ejecutar_engine(modulo, texto):
     loop = asyncio.get_event_loop()
     return await loop.run_in_executor(None, engine.run, texto)
 
-
 @app.on_event("startup")
-def startup_event():
-    app.state.penal_gate = PenalGate(
-        "scripts/vectores/centroide_penal.npy",
-        "scripts/vectores/centroide_no_penal.npy",
-        threshold=-0.01
-    )
+async def startup_event():
+    app.state.router = ModuleRouter("scripts/vectores/centroides_modulos.npy")
+
 import os
 print("CWD:", os.getcwd())
 print("FILES:", os.listdir())
@@ -70,6 +66,7 @@ print("FILES:", os.listdir())
 @app.post("/api/v1/penal/analyze")
 async def analyze_penal(req: PenalRequest, request: Request):
     return {"debug": "entra correctamente", "texto": req.texto}
+
 
 
 
