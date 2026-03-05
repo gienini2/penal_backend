@@ -6,8 +6,13 @@ import asyncio
 from core.gate.penal_gate import PenalGate
 from core.router.semantic_router import ModuleRouter, embedding
 
+# ---------------------------------------------------------------------
+# MODELO DE PETICIÓN
+# ---------------------------------------------------------------------
+
 class PenalRequest(BaseModel):
-    texto: str
+    texto_coloquial: str
+
 
 app = FastAPI()
 
@@ -23,6 +28,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# ---------------------------------------------------------------------
+# UMBRALES
+# ---------------------------------------------------------------------
+
 THRESHOLD_GATE     = -0.01
 THRESHOLD_MOD1     = 0.22
 THRESHOLD_MOD2     = 0.18
@@ -30,27 +39,41 @@ THRESHOLD_MOD2_GAP = 0.12
 THRESHOLD_MOD3     = 0.15
 
 
+# ---------------------------------------------------------------------
+# STARTUP
+# ---------------------------------------------------------------------
+
 @app.on_event("startup")
 async def startup_event():
+
     app.state.gate = PenalGate(
         "scripts/vectores/centroide_penal.npy",
         "scripts/vectores/centroide_no_penal.npy",
         threshold=THRESHOLD_GATE
     )
-    app.state.router = ModuleRouter("scripts/vectores/centroides_modulos.npy")
-    
+
+    app.state.router = ModuleRouter(
+        "scripts/vectores/centroides_modulos.npy"
+    )
+
     print("🗂️ Módulos detectados:", list(app.state.router.centroides.keys()))
-    
+
     import os
     modulos_disco = os.listdir("modules")
     print("📁 Carpetas en modules/:", modulos_disco)
 
 
+# ---------------------------------------------------------------------
+# FILTRO DE MÓDULOS
+# ---------------------------------------------------------------------
+
 def filtrar_modulos(ranking):
+
     if not ranking:
         return []
 
     seleccion = []
+
     mod1, s1 = ranking[0]
 
     if s1 < THRESHOLD_MOD1:
@@ -59,49 +82,101 @@ def filtrar_modulos(ranking):
     seleccion.append((mod1, s1))
 
     if len(ranking) > 1:
+
         mod2, s2 = ranking[1]
+
         if s2 >= THRESHOLD_MOD2 and (s1 - s2) <= THRESHOLD_MOD2_GAP:
             seleccion.append((mod2, s2))
 
     if len(ranking) > 2:
+
         mod3, s3 = ranking[2]
+
         if s3 >= THRESHOLD_MOD3:
             seleccion.append((mod3, s3))
 
     return seleccion
 
 
+# ---------------------------------------------------------------------
+# EJECUCIÓN DE ENGINE
+# ---------------------------------------------------------------------
+
 async def ejecutar_engine(modulo, texto):
+
     try:
+
         engine = __import__(f"modules.{modulo}.engine", fromlist=["run"])
+
         loop = asyncio.get_event_loop()
-        resultado = await loop.run_in_executor(None, engine.run, texto)
+
+        resultado = await loop.run_in_executor(
+            None,
+            engine.run,
+            texto
+        )
+
         return resultado
+
     except Exception as e:
+
         print(f"❌ Error ejecutando engine {modulo}: {e}")
+
         return []
 
 
+# ---------------------------------------------------------------------
+# ENDPOINT PRINCIPAL
+# ---------------------------------------------------------------------
+
 @app.post("/api/v1/penal/analyze")
 async def analyze_penal(req: PenalRequest):
-    texto = req.texto.strip()
+
+    texto = req.texto_coloquial.strip()
+
+    print("🔎 TEXTO RECIBIDO PENAL:")
+    print(texto)
 
     if not texto:
-        return {"is_penal": False, "motivo": "texto_vacio"}
 
-    es_penal, score_gate = app.state.gate.evaluar(texto)
+        return {
+            "is_penal": False,
+            "motivo": "texto_vacio"
+        }
+
+    # --------------------------------------------------------------
+    # EMBEDDING (una sola vez)
+    # --------------------------------------------------------------
+
+    emb = embedding(texto)
+
+    # --------------------------------------------------------------
+    # GATE PENAL
+    # --------------------------------------------------------------
+
+    es_penal, score_gate = app.state.gate.evaluar_vector(emb)
+
+    print("⚖️ SCORE GATE:", score_gate)
 
     if not es_penal:
+
         return {
             "is_penal": False,
             "score_gate": round(float(score_gate), 4)
         }
 
-    emb = embedding(texto)
+    # --------------------------------------------------------------
+    # ROUTER SEMÁNTICO
+    # --------------------------------------------------------------
+
     ranking_completo = app.state.router.rank(emb, top_n=3)
+
+    print("📊 RANKING MÓDULOS:", ranking_completo)
+
     modulos_activos = filtrar_modulos(ranking_completo)
 
     if not modulos_activos:
+
         return {
             "is_penal": True,
             "score_gate": round(float(score_gate), 4),
@@ -111,6 +186,9 @@ async def analyze_penal(req: PenalRequest):
         }
 
     modulo_principal, confidence = modulos_activos[0]
+
+    print("📁 MÓDULO SELECCIONADO:", modulo_principal)
+
     resultados = await ejecutar_engine(modulo_principal, texto)
 
     return {
@@ -120,13 +198,20 @@ async def analyze_penal(req: PenalRequest):
         "confidence_router": round(float(confidence), 4),
         "resultados": resultados,
         "modulos_evaluados": [
-            {"modulo": m, "confidence": round(float(s), 4)}
+            {
+                "modulo": m,
+                "confidence": round(float(s), 4)
+            }
             for m, s in modulos_activos
         ]
     }
 
 
+# ---------------------------------------------------------------------
+# HEALTH
+# ---------------------------------------------------------------------
+
 @app.get("/health")
 async def health():
-    return {"status": "ok"}
 
+    return {"status": "ok"}
